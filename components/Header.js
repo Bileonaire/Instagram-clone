@@ -9,15 +9,21 @@ import {
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalState } from "../atoms/modalAtom";
 
 function Header() {
     const { data : session } = useSession();
-    console.log(session);
+    const [modal, setModal] = useRecoilState(modalState);
+    // const modal = useRecoilValue(modalState); READ ONLY
+
+    const router = useRouter();
 
     return (
         <div className="shadoow-sm border-b bg-white sticky top-0 z-50">
             <div className="flex justify-between max-w-6xl cursor-pointer mx-5 lg:mx-auto">
-                <div className='relative w-24 hidden lg:inline-grid'>
+                <div onClick={() => router.push('/')} className='relative w-24 hidden lg:inline-grid'>
                     <Image
                         src="https://links.papareact.com/ocw"
                         layout="fill"
@@ -25,7 +31,7 @@ function Header() {
                     />
                 </div>
 
-                <div className='relative w-10 lg:hidden flex-shrink-0'>
+                <div onClick={() => router.push('/')} className='relative w-10 lg:hidden flex-shrink-0'>
                     <Image
                         src="https://links.papareact.com/jjm"
                         layout="fill"
@@ -43,7 +49,7 @@ function Header() {
                 </div>
 
                 <div className="flex items-center justify-end space-x-4 cursor-pointer">
-                    <HomeIcon className="navBtn"/>
+                    <HomeIcon onClick={() => router.push('/')} className="navBtn"/>
                     <MenuIcon className="h-6 md:hidden cursor-pointer"/>
 
                     {session? (
@@ -53,7 +59,7 @@ function Header() {
                                 <div className="absolute -top-1 -right-2 text-xs w-5 h-5 bg-red-500 rounded-full flex itemss-center justify-center animate-pulse text-white">3</div>
                             </div>
                             <UserGroupIcon className="navBtn"/>
-                            <PlusCircleIcon className="navBtn"/>
+                            <PlusCircleIcon onClick={() => setModal(true)} className="navBtn"/>
                             <HeartIcon className="navBtn"/>
 
                             <img
@@ -65,7 +71,7 @@ function Header() {
                         </>
 
                     ): (
-                        <button onClick={signIn}>Sign In</button>
+                        <button onClick={() => router.push('/auth/signin')}>Sign In</button>
                     )}
                 </div>
             </div>
